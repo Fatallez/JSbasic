@@ -6,8 +6,8 @@ const catalog = {
     list: [
     {id_product: 1, name: 't-shirt', price: 1000, img: 'img/1.jpg'},
     {id_product: 2, name: 'x-shirt', price: 1500, img: 'img/2.jpg'},
-    {id_product: 3, name: 'b-shirt', price: 800,  img: 'img/3.jpg'},
-    {id_product: 4, name: 'z-shirt', price: 2800, img: 'img/4.jpg'},
+    {id_product: 3, name: 'y-shirt', price: 800,  img: 'img/3.jpg'},
+    {id_product: 4, name: 'b-shirt', price: 2800, img: 'img/4.jpg'},
     ],
 
     init(catalogBlockClass, cart) {
@@ -74,6 +74,7 @@ const cart = {
 
         this.addEventHandlers();
         this.render();
+        this.removeEventHandlers();
     },
 
     addEventHandlers() {
@@ -89,7 +90,6 @@ const cart = {
         if (this.getCartGoodsLength() > 0) {
             this.renderCartList();
             this.totalCartPrice();
-            this.removeCartItem()
         } else {
             this.renderEmptyCart();
         }
@@ -131,7 +131,7 @@ const cart = {
                 <div class="item__name">${item.name}</div>
                 <img src="${item.img}" alt="#" class="item__img">
                 <div class="item__price">${item.price} руб.</div>
-                <button class="remove__item"">Удалить из корзины</button>
+                <button class="remove__item" data-id_product="${item.id_product}">Удалить из корзины</button>
               </div>`;
     },
 
@@ -156,8 +156,19 @@ const cart = {
         }
     },
 
-    removeCartItem() {
+    removeEventHandlers() {
+        this.cartBlock.addEventListener('click', event => this.removeFromBasket(event));
+    },
 
+    removeFromBasket(event) {
+        if (!event.target.classList.contains('remove__item')) return;
+        const id_product = +event.target.dataset.id_product;
+        const product = this.findProduct(id_product);
+
+        if (product) {
+            this.goods.splice(this.goods.indexOf(product), 1);
+            this.render();
+        }
     },
 };
 
